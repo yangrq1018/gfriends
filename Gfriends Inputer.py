@@ -415,7 +415,7 @@ def del_all():
 	print('【调试模式】删除所有头像\n')
 	(list_persons,emby_flag) = read_persons(host_url,api_key,True)
 	rewriteable_word('按任意键开始...'); os.system('pause>nul') if WINOS else input('按任意键开始...')
-	with alive_bar(len(list_persons), theme = 'ascii', enrich_print = False) as bar:
+	with alive_bar(len(list_persons), theme = 'classic', enrich_print = False) as bar:
 		for dic_each_actor in list_persons:
 			bar(dic_each_actor['Name'])
 			if dic_each_actor['ImageTags']:
@@ -648,10 +648,10 @@ try:
 					print('× 网络连接异常，跳过下载：'+ str(actor_name)+'\n')
 					continue
 		else:
-			with alive_bar(len(link_dict), theme = 'ascii', enrich_print = False) as bar:
+			with alive_bar(len(link_dict), theme = 'classic', enrich_print = False) as bar:
 				for actor_name,link in link_dict.items():
 					try:
-						bar(re.sub(r'（.*）','',actor_name)) if '（' in actor_name else bar(actor_name)
+						bar.text(re.sub(r'（.*）','',actor_name)) if '（' in actor_name else bar.text(actor_name)
 						proc_md5 = md5((actor_name+'+1').encode('UTF-8')).hexdigest()[13:-13]
 						if not proc_flag or (proc_flag and not proc_md5 in proc_list):
 							download_avatar(link,actor_name,proc_md5) # 记录下载完成的操作放到子线程中，以防没下完中断的断点没记录到
@@ -721,9 +721,9 @@ try:
 					if not result: pic_path_dict.pop(filename)
 				proc_log.write(proc_md5+'\n')
 		else:
-			with alive_bar(len(pic_path_dict), theme = 'ascii', enrich_print = False) as bar:
+			with alive_bar(len(pic_path_dict), theme = 'classic', enrich_print = False) as bar:
 				for filename,pic_path in pic_path_dict.items():
-					bar(re.sub(r'（.*）','',filename).replace('.jpg','')) if '（' in filename else bar(filename.replace('.jpg',''))
+					bar.text(re.sub(r'（.*）','',filename).replace('.jpg','')) if '（' in filename else bar.text(filename.replace('.jpg',''))
 					proc_md5 = md5((filename+'+2').encode('UTF-8')).hexdigest()[13:-13]
 					if not proc_flag or (proc_flag and not proc_md5 in proc_list):
 						result = fix_size(fixsize,pic_path)
@@ -751,9 +751,9 @@ try:
 					break
 			num_suc += 1
 	else:
-		with alive_bar(len(pic_path_dict), theme = 'ascii', enrich_print = False) as bar:
+		with alive_bar(len(pic_path_dict), theme = 'classic', enrich_print = False) as bar:
 			for filename,pic_path in pic_path_dict.items():
-				bar(re.sub(r'（.*）','',filename).replace('.jpg','')) if '（' in filename else bar(filename.replace('.jpg',''))
+				bar.text(re.sub(r'（.*）','',filename).replace('.jpg','')) if '（' in filename else bar.text(filename.replace('.jpg',''))
 				proc_md5 = md5((filename+'+3').encode('UTF-8')).hexdigest()[13:-13]
 				if not proc_flag or (proc_flag and not proc_md5 in proc_list):
 					with open(pic_path, 'rb') as pic_bit:
@@ -786,7 +786,7 @@ try:
 		down_log.close()
 	print('√ 导入完成')
 	print('\nEmby / Jellyfin 演职人员共 ' + str(len(list_persons)) + ' 人，其中 ' + str(num_exist) + ' 人之前已有头像')
-	print('本次导入 ' + str(num_suc) + ' 人，还有 ' + str(num_fail) + ' 人没有头像\n')
+	print('本次导入 ' + str(num_suc) + ' 人，还有 ' + str(num_fail - num_exist) + ' 人没有头像\n')
 	if overwrite == '0': print('-- 未开启覆盖已有头像，所以跳过了一些演员，详见 Getter 目录下的记录清单')
 except (KeyboardInterrupt, SystemExit):
 	print('× 用户强制停止或已知错误。')
